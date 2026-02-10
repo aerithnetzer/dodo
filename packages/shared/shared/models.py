@@ -1,41 +1,42 @@
 from datetime import datetime
-from typing import Any
-from uuid import UUID, uuid4
-from pydantic import BaseModel
+from uuid import uuid4
 from sqlmodel import SQLModel, Field
 
 
-class ObjectBase(BaseModel):
-    attachment: str
-    attributed_to: str
-    audience: str
-    content: str
-    context: str
-    name: str
-    end_time: datetime
-    generator: str
-    icon: str
-    image: str
-    in_reply_to: str
-    location: str
-    preview: str
-    published: str
-    replies: str
-    start_time: datetime
-    summary: str
-    tag: str
-    updated: datetime
-    url: str
-    to: str
-    bto: str
-    cc: str
-    bcc: str
-    media_type: str
-    duration: str
+from typing import Optional
+
+
+class ObjectMixin(SQLModel):
+    attachment: Optional[str] = None
+    attributed_to: Optional[str] = None
+    audience: Optional[str] = None
+    content: Optional[str] = None
+    context: Optional[str] = None
+    name: Optional[str] = None
+    end_time: Optional[datetime] = None
+    generator: Optional[str] = None
+    icon: Optional[str] = None
+    image: Optional[str] = None
+    in_reply_to: Optional[str] = None
+    location: Optional[str] = None
+    preview: Optional[str] = None
+    published: Optional[datetime] = None
+    replies: Optional[str] = None
+    start_time: Optional[datetime] = None
+    summary: Optional[str] = None
+    tag: Optional[str] = None
+    updated: Optional[datetime] = None
+    url: Optional[str] = None
+    to: Optional[str] = None
+    bto: Optional[str] = None
+    cc: Optional[str] = None
+    bcc: Optional[str] = None
+    media_type: Optional[str] = None
+    duration: Optional[str] = None
 
 
 # ACTOR MODELS
-class ActorBase(SQLModel, ObjectBase):
+class ActorBase(SQLModel):
     inbox: str = Field(default="", nullable=False)
     outbox: str = Field(default="", nullable=False)
 
@@ -45,7 +46,7 @@ class ActorBase(SQLModel, ObjectBase):
     preferred_username: str = Field(default="")
 
 
-class Actor(ActorBase, table=True):
+class Actor(ObjectMixin, table=True):
     id: str = Field(
         default_factory=lambda: str(uuid4), nullable=False, primary_key=True
     )
@@ -58,7 +59,7 @@ class ActivityBase(SQLModel):
     object: str = Field(nullable=False)
 
 
-class Activity(ActivityBase, table=True):
+class Activity(ObjectMixin, table=True):
     id: str = Field(
         default_factory=lambda: str(uuid4()), nullable=False, primary_key=True
     )
