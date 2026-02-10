@@ -1,0 +1,37 @@
+services:
+  database:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: dodo
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpass
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d dodo -U devuser"]
+      interval: 5s
+
+  api-dodo:
+    build:
+      context: .
+      dockerfile: ./services/dodo-activity-api/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://devuser:devpass@database:5432/dodo
+    ports:
+      - "8001:8000"
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      # Mount shared to same location as in Dockerfile
+      - ./packages/shared:/workspace/packages/shared
+      # Mount service code to same location
+      - ./services/dodo-activity-api:/workspace
+      # Preserve the virtual environment
+      - /workspace/.venv
+    command: uv run fastapi dev main.py --host 0.0.0.0 --port 8000
+
+volumes:
+  db_data:

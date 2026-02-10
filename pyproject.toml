@@ -1,0 +1,50 @@
+[project]
+name = "dodo"
+version = "0.0.1"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi[standard]>=0.128.6",
+  "psycopg>=3.3.2",
+  "psycopg2>=2.9.11",
+  "pydantic>=2.12.5",
+  "requests>=2.32.5",
+  "shared",
+  "sqlmodel>=0.0.32",
+]
+[tool.basedpyright]
+include = ["packages", "services"]
+exclude = ["**/__pycache__", "src/experimental", "src/typestubs"]
+ignore = ["docs"]
+defineConstant = { DEBUG = true }
+
+typeCheckingMode = "basic"
+diagnosticMode = "openFilesOnly"
+useLibraryCodeForTypes = false
+
+reportMissingImports = "error"
+reportMissingTypeStubs = false
+
+pythonVersion = "3.11"
+pythonPlatform = "Linux"
+
+executionEnvironments = [
+  { root = "src/web", pythonVersion = "3.5", pythonPlatform = "Windows", extraPaths = [
+    "src/service_libs",
+  ], reportMissingImports = "warning" },
+  { root = "src/sdk", pythonVersion = "3.0", extraPaths = [
+    "src/backend",
+  ] },
+  { root = "src/tests", reportPrivateUsage = false, extraPaths = [
+    "src/tests/e2e",
+    "src/sdk",
+  ] },
+  { root = "src" },
+]
+
+[tool.uv.workspace]
+members = ["tests", "packages/shared"]
+
+[tool.uv.sources]
+shared = { workspace = true }
