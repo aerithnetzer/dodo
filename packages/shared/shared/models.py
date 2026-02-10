@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Any
-from uuid import uuid4
+from uuid import UUID, uuid4
 from pydantic import BaseModel
 from sqlmodel import SQLModel, Field
 
@@ -13,14 +13,14 @@ class ObjectBase(BaseModel):
     context: str
     name: str
     end_time: datetime
-    generator: dict
-    icon: Any
-    image: Any
-    in_reply_to: Any
-    location: Any
-    preview: Any
-    published: Any
-    replies: Any
+    generator: str
+    icon: str
+    image: str
+    in_reply_to: str
+    location: str
+    preview: str
+    published: str
+    replies: str
     start_time: datetime
     summary: str
     tag: str
@@ -43,7 +43,6 @@ class ActorBase(SQLModel, ObjectBase):
     followers: str = Field(default="", nullable=False)
 
     preferred_username: str = Field(default="")
-    pass
 
 
 class Actor(ActorBase, table=True):
@@ -55,9 +54,11 @@ class Actor(ActorBase, table=True):
 class ActivityBase(SQLModel):
     type: str = Field(default="Activity")
     summary: str = Field(default=None, nullable=False)
-    actor: dict = Field(nullable=False)
-    object: dict = Field(nullable=False)
+    actor: str = Field(nullable=False)
+    object: str = Field(nullable=False)
 
 
-class Activity(ActivityBase):
-    pass
+class Activity(ActivityBase, table=True):
+    id: str = Field(
+        default_factory=lambda: str(uuid4()), nullable=False, primary_key=True
+    )
