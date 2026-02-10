@@ -13,4 +13,4 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-shared = { path = "/workspace/packages/shared", editable = true }
+shared = { path = "../../packages/shared" }
