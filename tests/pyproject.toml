@@ -40,3 +40,6 @@ executionEnvironments = [
   ] },
   { root = "src" },
 ]
+
+[tool.uv.sources]
+shared = { workspace = true }
