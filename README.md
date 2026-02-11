@@ -1,4 +1,4 @@
-# Dodo
+# Dodo 🦤
 
 Dodo is federated database system geared for libraries and cultural heritage
 institutions. It (not yet fully) implements the ActivityPub protocol to
