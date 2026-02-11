@@ -1,0 +1,28 @@
+{
+  "pythonVersion": "3.11",
+  "pythonPlatform": "Linux",
+  "pythonPath": ".venv/bin/python",
+  "include": ["packages", "services", "tests"],
+  "exclude": ["**/__pycache__", "**/*.egg-info", "build", "dist"],
+  "typeCheckingMode": "basic",
+  "reportMissingImports": "error",
+  "reportMissingTypeStubs": false,
+  "executionEnvironments": [
+    {
+      "root": "packages/shared",
+      "extraPaths": ["packages/shared"]
+    },
+    {
+      "root": "packages",
+      "extraPaths": ["packages/shared"]
+    },
+    {
+      "root": "services",
+      "extraPaths": ["packages/shared"]
+    },
+    {
+      "root": "tests",
+      "extraPaths": ["packages/shared"]
+    }
+  ]
+}

@@ -16,6 +16,7 @@ dependencies = [
 ]
 [tool.basedpyright]
 include = ["packages", "services"]
+extraPaths = ["packages/shared"]
 exclude = ["**/__pycache__", "src/experimental", "src/typestubs"]
 ignore = ["docs"]
 defineConstant = { DEBUG = true }
@@ -31,17 +32,10 @@ pythonVersion = "3.11"
 pythonPlatform = "Linux"
 
 executionEnvironments = [
-  { root = "src/web", pythonVersion = "3.5", pythonPlatform = "Windows", extraPaths = [
-    "src/service_libs",
-  ], reportMissingImports = "warning" },
-  { root = "src/sdk", pythonVersion = "3.0", extraPaths = [
-    "src/backend",
-  ] },
-  { root = "src/tests", reportPrivateUsage = false, extraPaths = [
-    "src/tests/e2e",
-    "src/sdk",
-  ] },
-  { root = "src" },
+  { root = "packages/shared", extraPaths = ["packages/shared"] },
+  { root = "packages", extraPaths = ["packages/shared"] },
+  { root = "services", extraPaths = ["packages/shared"] },
+  { root = "tests", extraPaths = ["packages/shared"] },
 ]
 
 [tool.uv.workspace]

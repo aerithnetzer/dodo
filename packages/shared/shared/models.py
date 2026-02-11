@@ -1,6 +1,7 @@
 from datetime import datetime
+from typing import List
 from uuid import uuid4
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
 
 
 from typing import Optional
@@ -35,6 +36,13 @@ class ObjectMixin(SQLModel):
     duration: Optional[str] = None
 
 
+class isPartOf(SQLModel, table=True):
+    id: str = Field(
+        default_factory=lambda: str(uuid4), nullable=False, primary_key=True
+    )
+    actor_id: str = Field(default=None, foreign_key="actor.id")
+
+
 # ACTOR MODELS
 class ActorBase(SQLModel):
     inbox: str = Field(default="", nullable=False)
@@ -48,18 +56,55 @@ class ActorBase(SQLModel):
 
 class Actor(ObjectMixin, table=True):
     id: str = Field(
-        default_factory=lambda: str(uuid4), nullable=False, primary_key=True
+        default_factory=lambda: str(uuid4),
+        nullable=False,
+        primary_key=True,
     )
 
-
-class ActivityBase(SQLModel):
-    type: str = Field(default="Activity")
-    summary: str = Field(default=None, nullable=False)
-    actor: str = Field(nullable=False)
-    object: str = Field(nullable=False)
+    type: str = Field(
+        default=None,
+        nullable=True,
+    )
 
 
 class Activity(ObjectMixin, table=True):
     id: str = Field(
-        default_factory=lambda: str(uuid4()), nullable=False, primary_key=True
+        default_factory=lambda: str(uuid4()),
+        nullable=False,
+        primary_key=True,
+    )
+
+    actor_id: str = Field(default=None, foreign_key="actor.id")
+    type: str = Field(default=None)
+    object_id: str = Field(foreign_key="object.id")
+
+
+# Association table
+class CollectionObjectLink(SQLModel, table=True):
+    collection_id: str = Field(
+        foreign_key="collection.id",
+        primary_key=True,
+    )
+    object_id: str = Field(
+        foreign_key="object.id",
+        primary_key=True,
+    )
+
+
+class Object(ObjectMixin, table=True):
+    id: str = Field(
+        default_factory=lambda: str(uuid4()),
+        primary_key=True,
+    )
+
+
+class Collection(ObjectMixin, table=True):
+    id: str = Field(
+        default_factory=lambda: str(uuid4()),
+        primary_key=True,
+    )
+
+    items: List[Object] = Relationship(
+        link_model=CollectionObjectLink,
+        sa_relationship_kwargs={"lazy": "selectin"},
     )
