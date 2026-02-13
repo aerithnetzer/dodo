@@ -52,7 +52,7 @@ async def create_actor(actor: Actor, session: SessionDep) -> Actor:
 
 @app.get("/collections/{collection}")
 async def get_collection() -> Collection:
-    pass
+    return Collection()
 
 
 @app.post("/objects/")
