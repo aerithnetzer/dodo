@@ -43,17 +43,6 @@ class isPartOf(SQLModel, table=True):
     actor_id: str = Field(default=None, foreign_key="actor.id")
 
 
-# ACTOR MODELS
-class ActorBase(SQLModel):
-    inbox: str = Field(default="", nullable=False)
-    outbox: str = Field(default="", nullable=False)
-
-    following: str = Field(default="", nullable=False)
-    followers: str = Field(default="", nullable=False)
-
-    preferred_username: str = Field(default="")
-
-
 class Actor(ObjectMixin, table=True):
     id: str = Field(
         default_factory=lambda: str(uuid4),
@@ -65,6 +54,13 @@ class Actor(ObjectMixin, table=True):
         default=None,
         nullable=True,
     )
+    inbox: str = Field(default="", nullable=False)
+    outbox: str = Field(default="", nullable=False)
+
+    following: str = Field(default="", nullable=False)
+    followers: str = Field(default="", nullable=False)
+
+    preferred_username: str = Field(default="")
 
 
 class Activity(ObjectMixin, table=True):
