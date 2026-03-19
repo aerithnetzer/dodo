@@ -16,13 +16,16 @@ def get_object_data() -> list[Object]:
     objects: list[Object] = []
     objects.append(
         Object(
-            attributed_to="some-uuid", content="https://www.library.northwestern.edu"
+            attributed_to="some-uuid",
+            content="https://www.library.northwestern.edu",
+            type="testing",
         )
     )
     objects.append(
         Object(
             attributed_to="some-uuid",
             content="https://www.library.northwestern.edu/people",
+            type="Work",
         )
     )
     return objects

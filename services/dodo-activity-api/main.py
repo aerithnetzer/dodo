@@ -1,4 +1,5 @@
 import logging
+import uuid
 from fastapi import FastAPI, Depends, HTTPException
 from shared.models import Activity, Actor, Collection, Object, CollectionObjectLink
 from sqlmodel import Session
@@ -50,9 +51,24 @@ async def create_actor(actor: Actor, session: SessionDep) -> Actor:
     return actor
 
 
-@app.get("/collections/{collection}")
-async def get_collection() -> Collection:
-    return Collection()
+@app.post("/collections")
+async def get_collection(
+    collection: Collection,
+    session: SessionDep,
+    token: Annotated[str, Depends(oauth2_scheme)],
+) -> dict[str, str | Collection]:
+    session.add(instance=collection)
+    session.commit()
+    session.refresh(instance=collection)
+    return {"token": token, "collection": collection}
+
+
+@app.get("/objects/{object_id}")
+async def get_objects(object_id: uuid.UUID, q: str | None = None):
+    if q:
+        return {"object_id": object_id, "q": q}
+    else:
+        return {"object_id", object_id}
 
 
 @app.post("/objects/")
@@ -60,11 +76,15 @@ async def post_objects(
     object: Object,
     session: SessionDep,
     token: Annotated[str, Depends(oauth2_scheme)],
-) -> dict[str, str | Object]:
-    session.add(object)
-    session.commit()
-    session.refresh(object)
-    return {"token": token, "object": object}
+) -> dict[str, str | Object] | Exception:
+    try:
+        session.add(object)
+        session.commit()
+        session.refresh(object)
+        return {"token": token, "object": object, "object_id": object.id}
+    except Exception as e:
+        LOGGER.error("Failed to insert object request.")
+        return e
 
 
 @app.post("/collections/")

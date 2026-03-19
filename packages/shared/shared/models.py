@@ -7,6 +7,10 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional
 
 
+class WorkObjectMixin(SQLModel):
+    title: Optional[str] = None
+
+
 class ObjectMixin(SQLModel):
     attachment: Optional[str] = None
     attributed_to: Optional[str] = None
@@ -34,6 +38,7 @@ class ObjectMixin(SQLModel):
     bcc: Optional[str] = None
     media_type: Optional[str] = None
     duration: Optional[str] = None
+    type: str
 
 
 class isPartOf(SQLModel, table=True):
@@ -92,6 +97,15 @@ class Object(ObjectMixin, table=True):
         default_factory=lambda: str(uuid4()),
         primary_key=True,
     )
+
+
+class WorkObject(Object):
+    """
+    `class WorkObject` inherits from `Object`.
+    Represents an abstract work. Should align with RDF
+    """
+
+    title: str = Field(nullable=False)
 
 
 class Collection(ObjectMixin, table=True):
